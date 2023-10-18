@@ -1,125 +1,50 @@
-let words = document.querySelectorAll(".word");
-words.forEach((word)=>{
-    let letters = word.textContent.split("");
-    word.textContent="";
-    letters.forEach((letter)=>{
-       let span = document.createElement("span");
-       span.textContent = letter;
-       span.className = "letter";
-       word.append(span);
-    });
-});
+// toggle icon navbar
+let menuIcon = document.querySelector('#menu-icon');
+let navbar = document.querySelector('.navbar');
 
-let currentWordIndex = 0;
-let maxWordIndex = words.length-1;
-words[currentWordIndex].style.opacity = "1";
-
-let changeText = ()=>{
-    let currentWord = words[currentWordIndex];
-    let nextWord = currentWordIndex === maxWordIndex ? words[0] : [currentWordIndex + 1];
-
-    Array.from(currentWord.children).forEach((letter,i)=>{
-        setTimeout(()=>{
-            letter.className = "letter out";
-        },i * 80);
-    });
-    nextWord.style.opacity="1";
-    Array.from(nextWord.children).forEach((letter,i)=>{
-        letter.className = "letter behind";
-        setTimeout(()=>{
-           letter.className = "letter in";
-        },340 + i * 80);
-    });
-    currentWordIndex = currentWordIndex === maxWordIndex ? 0 : currentWordIndex + 1; 
+menuIcon.onclick = () => {
+   menuIcon.classList.toggle('bx-x');
+   navbar.classList.toggle('active');
 };
 
-changeText();
-setInterval(changeText,3000)
+// sroll sections
+let sections = document.querySelectorAll('section');
+let navlinks = document.querySelectorAll('header nav a');
 
+window.onscroll = () => {
+   sections.forEach(sec => {
+    let top = window.scrollY;
+    let offset = sec.offsetTop - 100;
+    let height = sec.offsetHeight;
+    let id = sec.getAttribute('id');
 
-// circle skill ///////////////////////////////////
-
-const circles = document.querySelectorAll('.circle')
-circles.forEach(elem=>{
-    var dots = elem.getAttribute("data-dots");
-    var marked = elem.getAttribute("data-percent");
-    var percent = Math.floor(dots*marked/100);
-    var points = "";
-    var rotate = 360 / dots;
-
-
-    for(let i = 0 ; i < dots ; i++){
-      points += '<div class="points" style="--i:${i}; --rot:${rotate}deg"></div>';  
+    if(top >= offset && top < offset + height) {
+       // active navbar links 
+       navlinks.forEach(links => {
+        links.classList.remove('active');
+        document.querySelector('header nav a[href*=' + id + ']').classList.add('active');
+      });
+      // active sections for animate on scroll
+      sec.classList.add('show-animate');
     }
-    elem.innerHTML = points;
+    // if want to use animation that repeats on scroll use this
+    else {
+      sec.classList.remove('show-animate');
+    }
+   });
+     
+    // sticky header
+    let header = document.querySelector('header');
 
-    const pointsMarked = elem.querySelectorAll('.points');
-    for(let i = 0; i<percent ;i++){
-        pointsMarked[i].classList.add('marked')
-    }    
-})
+    header.classList.toggle('sticky', window.scrollY > 100);
 
+   // remove toggle icon and navbar when click navbar links (scroll)
+  menuIcon.classList.remove('bx-x');
+  navbar.classList.remove('active');
 
-//mix it up portfolio section
-var mixer = mixitup('.portfolio-gallery');
+  //animation footer on scroll
+  let footer = document.querySelector('footer');
 
-
-
-
-// active menu ///////////////////////////////////
-let menui = document.querySelectorAll('header ul li a');
-let section = document.querySelectorAll('section');
-
-
-function activeMenu(){
-    let len = section.length;
-    while(--len && window.scrollY + 97 < section[len].offsetTop){}
-    menuLi.forEach(sec =>sec.classList.remove("active"));
-    menuLi[len].classList.add("active");
+  footer.classList.toggle('show-animate', this.innerHeight + this.scrollY >= document.scrollingElement.
+  scrollHeight);
 }
-
-activeMenu();
-window.addEventListener("scroll",activeMenu);
-
-
-// sticky navbar ///////////////////////////////////
-const header = document.querySelector("header");
-window.addEventListener("scroll",function(){
-    header.classList,toggle("sticky",window.scrollY > 50)
-})
-
-// toggle icon navbar ///////////////////////////////////
-let menuIcon = document.querySelector("#menu-icon");
-let navlist = document.querySelector(".navlist");
-
-menuIcon.onclick = ()=>{
-    menuIcon.classList.toggle("bx-x");
-    navlist.classList.toggle("open");
-}
-
-
-window.onscroll = ()=>{
-    menuIcon.classList.remove("bx-x");
-    navlist.classList.remove("open");
-}
-
-// paral lax ///////////////////////////////////
-
-const observer = new IntersectionObserver((entries)=>{
-  entries.forEach((entry)=>{
-      if(entry.isIntersecting){
-        entry.target.classList.add("show-items");
-      }else{
-        entry.target.classList.remove("show-items");
-      }
-  });
-});
-
-const scrollScale = document.querySelectorAll(".scroll-scale");
-scrollScale.forEach((el)=>observer.observe(el));
-
-const scrollBotton = document.querySelectorAll(".scroll-bottom");
-scrollBottom.forEach((el)=>observer.observe(el));
-
-const scrollTop = document.querySelectorAll(".scroll-top");
-scrollTop.forEach((el)=>observer.observe(el));
